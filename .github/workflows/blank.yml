@@ -16,7 +16,7 @@ jobs:
   perf_test_request:
     name: Request Perf Test
     outputs:
-      # deployments: ${{ steps.check_regex.outputs.deployments }}
+      deployments: ${{ steps.check_regex.outputs.deployments }}
       run_build: ${{ steps.check_regex.outputs.run_build }}
     runs-on: ubuntu-latest
     steps:
