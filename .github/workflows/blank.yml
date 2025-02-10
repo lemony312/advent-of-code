@@ -32,10 +32,10 @@ jobs:
           if [[ "$comment_body" =~ ^build\ it,\ perf\ it,\ (myapp|myotherapp) ]]; then
             KEY="${BASH_REMATCH[1]}"
             echo "Running Perf for $KEY"
-            APPS=$(echo "$DEPLOYMENT_APPS" | jq -r --arg key "$KEY" '.[$key]|join(","))
-            echo "$APPS"
+            apps_to_deploy=$(jq -r --arg key "$KEY" '.[$key]|join(",") <<< "$DEPLOYMENT_APPS")
+            echo "$apps_to_deploy"
             echo "::set-output name=run_build::true"
-            # echo "::set-output name=deployments::$APPS"
+            # echo "::set-output name=deployments::$apps_to_deploy"
           else
             echo "Regex pattern not matched in PR body."
             echo "::set-output name=run_build::false"
