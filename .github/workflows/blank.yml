@@ -25,18 +25,18 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
-          BODY=$(cat "$GITHUB_EVENT_PATH")
-          PR_BODY=$(echo "$BODY" | jq '.comment.body')
-          if [[ "$PR_BODY" =~ ^build\ it,\ perf\ it,\ (myotherapp|mymap) ]]; then
-            KEY="${BASH_REMATCH[1]}"
-            echo "Running Perf for $KEY"
-            APPS=$(echo $DEPLOYMENT_APPS | jq -r --arg key "$KEY" '.[$key]|join(","))
-            echo "::set-output name=run_build::true"
-            echo "::set-output name=deployments::$APPS"
-          else
-            echo "Regex pattern not matched in PR body."
-            echo "::set-output name=run_build::false"
-          fi
+          while read BODY ; do 
+            PR_BODY = $(jq '.comment.body' <<< "$BODY")
+            if [[ "$PR_BODY" =~ ^build\ it,\ perf\ it,\ (myotherapp|mymap) ]]; then
+              KEY="${BASH_REMATCH[1]}"
+              echo "Running Perf for $KEY"
+              APPS=$(echo $DEPLOYMENT_APPS | jq -r --arg key "$KEY" '.[$key]|join(","))
+              echo "::set-output name=run_build::true"
+              echo "::set-output name=deployments::$APPS"
+            else
+              echo "Regex pattern not matched in PR body."
+              echo "::set-output name=run_build::false"
+            fi ; done < "$GITHUB_EVENT_PATH"
           
   # This workflow contains a single job called "build"
   build:
