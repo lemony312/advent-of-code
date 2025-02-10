@@ -25,7 +25,9 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
-          PR_BODY=$(cat "$GITHUB_EVENT_PATH" | jq -r '.comment.body')
+          BODY=$(cat "$GITHUB_EVENT_PATH")
+          echo "$BODY" | jq '.comment.body'
+          PR_BODY=$(echo "$BODY" | jq -r '.comment.body')
           if [[ "$PR_BODY" =~ ^build\ it,\ perf\ it,\ (myotherapp|mymap) ]]; then
             KEY="${BASH_REMATCH[1]}"
             echo "Running Perf for $KEY"
