@@ -7,11 +7,8 @@ env:
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  issue_comment:
+    types: [created]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -29,7 +26,7 @@ jobs:
         id: check_regex
         run: |
           PR_BODY=$(jq -r '.pull_request.body' "$GITHUB_EVENT_PATH")
-          if [[ "$PR_BODY" =~ ^buildE\ it,\ perf\ it,\ (assignments|flags) ]]; then
+          if [[ "$PR_BODY" =~ ^build\ it,\ perf\ it,\ (assignments|flags) ]]; then
             KEY="${BASH_REMATCH[1]}"
             echo "Running Perf for $KEY"
             APPS=$(echo $DEPLOYMENT_APPS | jq -r --arg key "$KEY" '.[$key]|join(","))
