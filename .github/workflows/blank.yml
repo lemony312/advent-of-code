@@ -32,8 +32,9 @@ jobs:
           if [[ "$comment_body" =~ ^build\ it,\ perf\ it,\ (myapp|myotherapp) ]]; then
             KEY="${BASH_REMATCH[1]}"
             echo "Running Perf for $KEY"
-            apps_to_deploy=$(jq -r --arg key "$KEY" '.[$key]|join(",") <<< "$DEPLOYMENT_APPS")
-            echo "$apps_to_deploy"
+            echo "$DEPLOYMENT_APPS"
+            jq -r --arg key "$KEY" '.[$key]|join(",") <<< "$DEPLOYMENT_APPS"
+            # echo "$apps_to_deploy"
             echo "::set-output name=run_build::true"
             # echo "::set-output name=deployments::$apps_to_deploy"
           else
