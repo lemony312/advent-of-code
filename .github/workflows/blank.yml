@@ -1,7 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI
-
+env:
+  DEPLOYMENT_APPS: '{"mymap": ["app1", "app2", "app3"], "myotherapp": ["app1", "app2", "app4", "app5"]}'
 # Controls when the workflow will run
 on:
   issue_comment:
@@ -14,8 +15,6 @@ on:
 jobs:
   perf_test_request:
     name: Request Perf Test
-    env:
-      DEPLOYMENT_APPS: '{"mymap": ["app1", "app2", "app3"], "myotherapp": ["app1", "app2", "app4", "app5"]}'
     outputs:
       # deployments: ${{ steps.check_regex.outputs.deployments }}
       run_build: ${{ steps.check_regex.outputs.run_build }}
@@ -33,7 +32,8 @@ jobs:
             KEY="${BASH_REMATCH[1]}"
             echo "Running Perf for $KEY"
             echo "$DEPLOYMENT_APPS"
-            jq -r --arg key "$KEY" '.[$key]|join(",") <<< "$DEPLOYMENT_APPS"
+            # echo "${{ env.DEPLOYMENT_APPS }}"
+            # jq -r --arg key "$KEY" '.[$key]|join(",") <<< "$DEPLOYMENT_APPS"
             # echo "$apps_to_deploy"
             echo "::set-output name=run_build::true"
             # echo "::set-output name=deployments::$apps_to_deploy"
