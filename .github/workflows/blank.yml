@@ -42,7 +42,8 @@ jobs:
           
   # This workflow contains a single job called "build"
   build:
-    if: perf_test_request.outputs.run_build == 'true'
+    needs: perf_test_request
+    if: needs.perf_test_request.outputs.run_build == 'true'
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
