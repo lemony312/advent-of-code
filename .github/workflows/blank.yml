@@ -25,7 +25,7 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
-          echo "$GITHUB_EVENT_PATH"
+          cat "$GITHUB_EVENT_PATH"
           PR_BODY=$(jq -r '.pull_request.body' "$GITHUB_EVENT_PATH")
           if [[ "$PR_BODY" =~ ^build\ it,\ perf\ it,\ (myotherapp|mymap) ]]; then
             KEY="${BASH_REMATCH[1]}"
