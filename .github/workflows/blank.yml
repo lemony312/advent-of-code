@@ -1,9 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI
-env:
-  DEPLOYMENT_APPS: '{"mymap": ["app1", "app2", "app3"], "myotherapp": ["app1", "app2", "app4", "app5"]}'
-
 
 # Controls when the workflow will run
 on:
@@ -17,6 +14,8 @@ on:
 jobs:
   perf_test_request:
     name: Request Perf Test
+    env:
+      DEPLOYMENT_APPS: '{"mymap": ["app1", "app2", "app3"], "myotherapp": ["app1", "app2", "app4", "app5"]}'
     outputs:
       deployments: ${{ steps.check_regex.outputs.deployments }}
       run_build: ${{ steps.check_regex.outputs.run_build }}
