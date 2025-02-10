@@ -17,6 +17,9 @@ on:
 jobs:
   perf_test_request:
     name: Request Perf Test
+    outputs:
+      comment_body: ${{ steps.check_regex.outputs.comment_body }}
+      run_build: ${{ steps.check_regex.outputs.run_build }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,6 +30,8 @@ jobs:
         run: |
           comment_body=$(jq -r .comment.body < $GITHUB_EVENT_PATH)
           echo "Comment Body: $comment_body"
+          echo "::set-output name=comment_body::$comment_body"
+          echo "::set-output name=comment_body::true"
           
   # This workflow contains a single job called "build"
   build:
