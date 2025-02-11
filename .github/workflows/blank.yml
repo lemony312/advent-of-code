@@ -24,6 +24,7 @@ jobs:
     name: Request Perf Test
     env:
       MANUAL_INPUT: ${{ inputs.app_name }}
+      BRANCH_COMMENT: ${{ github.ref }}
     outputs:
       deployments: ${{ steps.check_regex.outputs.deployments }}
       run_build: ${{ steps.check_regex.outputs.run_build }}
@@ -35,7 +36,7 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
-          echo $(jq '.' < $GITHUB_EVENT_PATH)
+          echo "$BRANCH_COMMENT"
           echo "input $MANUAL_INPUT"
           KEY=""
           if [ -n "$MANUAL_INPUT" ]; then
