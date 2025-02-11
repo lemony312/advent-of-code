@@ -35,6 +35,7 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
+          echo "input $MANUAL_INPUT"
           KEY=""
           if [ -n "$MANUAL_INPUT" ]; then
             KEY="$MANUAL_INPUT"
@@ -42,6 +43,7 @@ jobs:
             KEY="${BASH_REMATCH[1]}"
           fi  
 
+          echo "key: $KEY"
           if [ -n "$KEY" ]; then
             echo "Regex pattern not matched in PR body."
             echo "::set-output name=run_build::false"
