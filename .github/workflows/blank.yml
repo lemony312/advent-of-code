@@ -36,7 +36,7 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
-          echo "$BRANCH_COMMENT"
+          echo "${BRANCH_COMMENT/#refs/heads/}"
           echo "input $MANUAL_INPUT"
           KEY=""
           if [ -n "$MANUAL_INPUT" ]; then
