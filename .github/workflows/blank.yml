@@ -10,21 +10,20 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    name:
-      type: choice
-      description: App to Perf Test
-      options:
-        - build and perf assignments
-        - build and perf flags
-      message:
-        required: true
-
-
+    inputs:
+      app_name:
+        type: choice
+        description: App to Perf Test
+        options:
+          - myapp
+          - myotherapp
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   perf_test_request:
     name: Request Perf Test
+    env:
+      MANUAL_INPUT: ${{ inputs.app_name }}
     outputs:
       deployments: ${{ steps.check_regex.outputs.deployments }}
       run_build: ${{ steps.check_regex.outputs.run_build }}
@@ -36,19 +35,36 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
-          comment_body=$(jq -r .comment.body < $GITHUB_EVENT_PATH)
-          echo "Comment Body: $comment_body"
-          if [[ "$comment_body" =~ ^build\ it,\ perf\ it,\ (myapp|myotherapp) ]]; then
+          KEY=""
+          if [ -n "$MANUAL_INPUT"]; then
+            KEY="$MANUAL_INPUT"
+          elif [[ $(jq -r .comment.body < $GITHUB_EVENT_PATH) =~ ^build\ it,\ perf\ it,\ (myapp|myotherapp) ]]; then
             KEY="${BASH_REMATCH[1]}"
+          fi  
+
+          if [ -n "$KEY" ]; then
+            echo "Regex pattern not matched in PR body."
+            echo "::set-output name=run_build::false"
+          else
             echo "Running Perf for $KEY"
             apps_to_deploy=$(jq -r --arg key "$KEY" '.[$key]|join(",")' <<< "$DEPLOYMENT_APPS")
             echo "$apps_to_deploy"
             echo "::set-output name=run_build::true"
             echo "::set-output name=deployments::$apps_to_deploy"
-          else
-            echo "Regex pattern not matched in PR body."
-            echo "::set-output name=run_build::false"
-          fi
+          
+        
+          # comment_body=$(jq -r .comment.body < $GITHUB_EVENT_PATH)
+          # if [[ "$comment_body" =~ ^build\ it,\ perf\ it,\ (myapp|myotherapp) ]]; then
+          #   KEY="${BASH_REMATCH[1]}"
+          #   echo "Running Perf for $KEY"
+          #   apps_to_deploy=$(jq -r --arg key "$KEY" '.[$key]|join(",")' <<< "$DEPLOYMENT_APPS")
+          #   echo "$apps_to_deploy"
+          #   echo "::set-output name=run_build::true"
+          #   echo "::set-output name=deployments::$apps_to_deploy"
+          # else
+          #   echo "Regex pattern not matched in PR body."
+          #   echo "::set-output name=run_build::false"
+          # fi
           
   # This workflow contains a single job called "build"
   build:
