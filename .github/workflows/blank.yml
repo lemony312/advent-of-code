@@ -24,7 +24,6 @@ jobs:
     name: Request Perf Test
     env:
       MANUAL_INPUT: ${{ inputs.app_name }}
-      arS: ${{ github.event }}
     outputs:
       deployments: ${{ steps.check_regex.outputs.deployments }}
       run_build: ${{ steps.check_regex.outputs.run_build }}
@@ -36,7 +35,7 @@ jobs:
       - name: Pick assignments or flags
         id: check_regex
         run: |
-          echo "$arS"
+          echo $(jq '.' < $GITHUB_EVENT_PATH)
           echo "input $MANUAL_INPUT"
           KEY=""
           if [ -n "$MANUAL_INPUT" ]; then
