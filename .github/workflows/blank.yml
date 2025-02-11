@@ -45,14 +45,14 @@ jobs:
 
           echo "key: $KEY"
           if [ -n "$KEY" ]; then
-            echo "Regex pattern not matched in PR body."
-            echo "::set-output name=run_build::false"
-          else
             echo "Running Perf for $KEY"
             apps_to_deploy=$(jq -r --arg key "$KEY" '.[$key]|join(",")' <<< "$DEPLOYMENT_APPS")
             echo "$apps_to_deploy"
             echo "::set-output name=run_build::true"
             echo "::set-output name=deployments::$apps_to_deploy"
+          else
+            echo "Regex pattern not matched in PR body."
+            echo "::set-output name=run_build::false"
           fi
         
           # comment_body=$(jq -r .comment.body < $GITHUB_EVENT_PATH)
