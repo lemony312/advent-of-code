@@ -36,7 +36,7 @@ jobs:
         id: check_regex
         run: |
           KEY=""
-          if [ -n "$MANUAL_INPUT"]; then
+          if [ -n "$MANUAL_INPUT" ]; then
             KEY="$MANUAL_INPUT"
           elif [[ $(jq -r .comment.body < $GITHUB_EVENT_PATH) =~ ^build\ it,\ perf\ it,\ (myapp|myotherapp) ]]; then
             KEY="${BASH_REMATCH[1]}"
