@@ -51,7 +51,7 @@ jobs:
             echo "$apps_to_deploy"
             echo "::set-output name=run_build::true"
             echo "::set-output name=deployments::$apps_to_deploy"
-          
+          fi
         
           # comment_body=$(jq -r .comment.body < $GITHUB_EVENT_PATH)
           # if [[ "$comment_body" =~ ^build\ it,\ perf\ it,\ (myapp|myotherapp) ]]; then
