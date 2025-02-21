@@ -46,7 +46,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const { test } = require('./.github/scripts/test.cjs');
+            const { test } = require('./.github/scripts/test.js');
             test();  
 
       - name: Pick assignments or flags
